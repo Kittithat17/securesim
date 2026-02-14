@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const sp = useSearchParams();
@@ -14,7 +14,15 @@ export default function Home() {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (!token) return;
 
+    fetch("/api/click", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+  }, [token]);
   async function onLogin() {
     if (!token) return; // กันกรณีเข้าหน้านี้ตรงๆ โดยไม่มี token
 
