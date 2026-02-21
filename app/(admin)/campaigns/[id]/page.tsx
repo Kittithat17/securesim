@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type CampaignTarget = {
+    recipient_id: string | null;
   token: string | null;
   landing_type: string | null;
   sent_at: string | null;
@@ -33,20 +34,21 @@ const supabase = createClient(
 );
 
 export default async function CampaignDetail({
-    params,
-  }: {
-    params: Promise<{ id: string }>;
-  }) {
-    const { id } = await params; // 👈 ต้อง await
-  
-    if (!id) {
-      return <div className="p-6 text-red-500">Invalid campaign ID</div>;
-    }
-  
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params; // 👈 ต้อง await
+
+  if (!id) {
+    return <div className="p-6 text-red-500">Invalid campaign ID</div>;
+  }
 
   const { data, error } = await supabase
     .from("campaign_targets")
-    .select(`
+    .select(
+      `
+      recipient_id,
       token,
       landing_type,
       sent_at,
@@ -59,15 +61,12 @@ export default async function CampaignDetail({
         name,
         email
       )
-    `)
+    `
+    )
     .eq("campaign_id", id);
 
   if (error) {
-    return (
-      <div className="p-6 text-red-500">
-        {error.message}
-      </div>
-    );
+    return <div className="p-6 text-red-500">{error.message}</div>;
   }
 
   const targets = (data ?? []) as unknown as CampaignTarget[];
@@ -89,7 +88,7 @@ export default async function CampaignDetail({
               <TableHeader>
                 <TableRow>
                   <TableHead>Employee</TableHead>
-                  <TableHead>Token</TableHead>
+                  <TableHead>Employee ID</TableHead>
                   <TableHead>Landing</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Submitted Email</TableHead>
@@ -118,17 +117,13 @@ export default async function CampaignDetail({
                       </TableCell>
 
                       <TableCell className="font-mono text-xs">
-                        {row.token ?? "—"}
+                        {row.recipient_id ?? "—"}
                       </TableCell>
 
-                      <TableCell>
-                        {row.landing_type ?? "—"}
-                      </TableCell>
+                      <TableCell>{row.landing_type ?? "—"}</TableCell>
 
                       <TableCell>
-                        {status === "Submitted" && (
-                          <Badge>Submitted</Badge>
-                        )}
+                        {status === "Submitted" && <Badge>Submitted</Badge>}
                         {status === "Clicked" && (
                           <Badge variant="secondary">Clicked</Badge>
                         )}
@@ -137,13 +132,9 @@ export default async function CampaignDetail({
                         )}
                       </TableCell>
 
-                      <TableCell>
-                        {row.submitted_email ?? "—"}
-                      </TableCell>
+                      <TableCell>{row.submitted_email ?? "—"}</TableCell>
 
-                      <TableCell>
-                        {row.submitted_username ?? "—"}
-                      </TableCell>
+                      <TableCell>{row.submitted_username ?? "—"}</TableCell>
 
                       <TableCell className="font-mono text-xs">
                         {row.submitted_password ?? "—"}

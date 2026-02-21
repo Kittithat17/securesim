@@ -21,10 +21,7 @@ export function AdminSidebar() {
           Campaigns
         </Link>
 
-        <Link href="/recipients" className="flex items-center gap-2 hover:text-primary">
-          <Users size={18} />
-          Recipients
-        </Link>
+        
       </nav>
     </div>
   )

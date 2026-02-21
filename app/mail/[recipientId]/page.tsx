@@ -1,5 +1,6 @@
 //app/mail/%5BrecipientId%5D/page.tsx
 import { createClient } from "@supabase/supabase-js"
+import MailboxClient from "./MailboxClient"
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -33,11 +34,11 @@ export default async function MailboxPage({
 
   return (
     <div className="h-screen flex bg-gray-100">
-  
-      {/* Sidebar */}
+      
+      {/* Sidebar (ของเดิมคุณ 100%) */}
       <div className="w-60 bg-white border-r p-4 space-y-4">
         <h1 className="text-xl font-bold text-red-500">Mail</h1>
-  
+
         <nav className="space-y-2 text-sm">
           <div className="bg-red-100 text-red-600 px-3 py-2 rounded font-medium">
             Inbox
@@ -50,46 +51,10 @@ export default async function MailboxPage({
           </div>
         </nav>
       </div>
-  
-  
-      {/* Mail List */}
-      <div className="w-80 bg-white border-r overflow-y-auto">
-        {data?.map((email) => (
-          <div
-            key={email.id}
-            className="p-4 border-b hover:bg-gray-100 cursor-pointer"
-          >
-            <div className="font-medium text-sm">
-              {email.subject}
-            </div>
-            <div className="text-xs text-gray-500 truncate">
-              Click to open message
-            </div>
-          </div>
-        ))}
-      </div>
-  
-  
-      {/* Preview Panel */}
-      <div className="flex-1 p-6 overflow-y-auto bg-white">
-        {data && data.length > 0 ? (
-          <>
-            <h2 className="text-xl font-semibold mb-4">
-              {data[0].subject}
-            </h2>
-  
-            <div
-              className="prose max-w-none text-sm"
-              dangerouslySetInnerHTML={{
-                __html: data[0].body_html,
-              }}
-            />
-          </>
-        ) : (
-          <div className="text-gray-500">No emails</div>
-        )}
-      </div>
-  
+
+      {/* 🔥 ตรงนี้เรียก Client Component */}
+      <MailboxClient emails={data ?? []} />
+
     </div>
   )
   

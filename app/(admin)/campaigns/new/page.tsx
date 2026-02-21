@@ -35,7 +35,7 @@ export default function NewCampaignPage() {
         onChange={(e) => setLanding(e.target.value)}
       >
         <option value="facebook">Facebook</option>
-        <option value="microsoft">Microsoft</option>
+        <option value="ig">Instagram</option>
       </select>
 
       <button
