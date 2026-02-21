@@ -21,7 +21,7 @@ export default function MailboxClient({
 
   return (
     <>
-      {/* Mail List (UI เดิมคุณ 100%) */}
+      {/* Mail List */}
       <div className="w-80 bg-white border-r overflow-y-auto">
         {emails?.map((email) => (
           <div
@@ -41,7 +41,7 @@ export default function MailboxClient({
         ))}
       </div>
 
-      {/* Preview Panel (UI เดิมคุณ 100%) */}
+      {/* Preview Panel  */}
       <div className="flex-1 p-6 overflow-y-auto bg-white">
         {selected ? (
           <>
