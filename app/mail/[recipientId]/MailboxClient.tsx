@@ -13,17 +13,22 @@ export default function MailboxClient({
 }: {
   emails: Email[]
 }) {
+  // 1️⃣ Reverse the array so the newest email is at the top (index 0)
+  const reversedEmails = [...(emails || [])].reverse()
+
+  // 2️⃣ Set the default selection to index 0 of our newly reversed list
   const [selectedId, setSelectedId] = useState(
-    emails?.[0]?.id
+    reversedEmails?.[0]?.id
   )
 
-  const selected = emails.find(e => e.id === selectedId)
+  const selected = reversedEmails.find(e => e.id === selectedId)
 
   return (
     <>
       {/* Mail List */}
       <div className="w-80 bg-white border-r overflow-y-auto">
-        {emails?.map((email) => (
+        {/* 3️⃣ Map through the reversed list instead of the original one */}
+        {reversedEmails?.map((email) => (
           <div
             key={email.id}
             onClick={() => setSelectedId(email.id)}
