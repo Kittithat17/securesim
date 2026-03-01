@@ -37,6 +37,7 @@ export default async function CampaignsPage() {
             <Link href={`/campaigns/${c.id}`} className="text-primary">
               View
             </Link>
+            <p>Total: {data?.length}</p>
           </div>
         ))}
       </div>
