@@ -1,4 +1,4 @@
-//app/landing/facebook/page.tsx
+//app/account-review/facebook/page.tsx
 "use client";
 
 import Image from "next/image";

@@ -1,4 +1,4 @@
-//app/landing/ig/page.tsx
+///app/account-review/instagram/page.tsx
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";

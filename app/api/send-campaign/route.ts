@@ -1,3 +1,4 @@
+//api/send-campaign/route.ts
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
@@ -58,7 +59,7 @@ export async function POST(req: Request) {
                 We have detected a new sign-in attempt. Please verify your identity immediately.
               </p>
               <div style="text-align: center; margin: 30px 0;">
-                <a href="http://localhost:3000/landing/${landing_type}?token=${token}" 
+                <a href="http://localhost:3000//account-review/${landing_type}?session=${token}" 
                    style="background-color: #007bff; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;">
                   Verify Account Now
                 </a>
