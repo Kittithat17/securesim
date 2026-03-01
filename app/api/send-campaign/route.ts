@@ -7,8 +7,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 const domainMap: Record<string, string> = {
-  sawaddee: process.env.SAWADDEE_DOMAIN!,
-  welcom: process.env.WELCOM_DOMAIN!,
+  facebook: process.env.FACEBOOK_DOMAIN!,
+  instagram: process.env.INSTAGRAM_DOMAIN!,
 };
 
 
