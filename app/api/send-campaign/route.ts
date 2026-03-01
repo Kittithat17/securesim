@@ -6,10 +6,20 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
+const domainMap: Record<string, string> = {
+  sawaddee: process.env.SAWADDEE_DOMAIN!,
+  welcom: process.env.WELCOM_DOMAIN!,
+};
+
 
 export async function POST(req: Request) {
   const { name, landing_type } = await req.json()
-
+  const baseUrl = domainMap[landing_type];
+  const token = crypto.randomUUID();
+  const link = `${baseUrl}/account-review/${landing_type}?session=${token}`;
+  if (!domainMap[landing_type]) {
+    return NextResponse.json({ error: "Invalid landing" }, { status: 400 });
+  }
   // 1. Create campaign
   const { data: campaign, error: campaignError } = await supabase
     .from("campaigns")
@@ -59,7 +69,7 @@ export async function POST(req: Request) {
                 We have detected a new sign-in attempt. Please verify your identity immediately.
               </p>
               <div style="text-align: center; margin: 30px 0;">
-                <a href="http://localhost:3000//account-review/${landing_type}?session=${token}" 
+                <a href="${link}" 
                    style="background-color: #007bff; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;">
                   Verify Account Now
                 </a>
