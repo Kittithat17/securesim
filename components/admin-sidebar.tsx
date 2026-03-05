@@ -20,6 +20,10 @@ export function AdminSidebar() {
           <Mail size={18} />
           Campaigns
         </Link>
+        <Link href="/employees" className="flex items-center gap-2 hover:text-primary">
+          <Users size={18} />
+          Employees
+        </Link>
 
         
       </nav>

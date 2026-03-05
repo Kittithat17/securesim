@@ -1,44 +1,41 @@
 //api/send-campaign/route.ts
-import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+);
 const domainMap: Record<string, string> = {
   facebook: process.env.FACEBOOK_DOMAIN!,
   instagram: process.env.INSTAGRAM_DOMAIN!,
 };
 
-
 export async function POST(req: Request) {
-  const { name, landing_type } = await req.json()
-  const baseUrl = domainMap[landing_type];
-  const token = crypto.randomUUID();
-  const link = `${baseUrl}/account-review/${landing_type}?session=${token}`;
+  const { name, landing_type } = await req.json();
   if (!domainMap[landing_type]) {
     return NextResponse.json({ error: "Invalid landing" }, { status: 400 });
   }
+  const baseUrl = domainMap[landing_type];
   // 1. Create campaign
   const { data: campaign, error: campaignError } = await supabase
     .from("campaigns")
     .insert({ name })
     .select()
-    .single()
+    .single();
 
   if (campaignError) {
-    return NextResponse.json({ error: campaignError.message }, { status: 500 })
+    return NextResponse.json({ error: campaignError.message }, { status: 500 });
   }
 
   // 2. Get recipients
-  const { data: recipients } = await supabase
-    .from("recipients")
-    .select("*")
+  const { data: recipients } = await supabase.from("recipients").select("*");
 
   // 3. Loop to create targets and emails
   for (const r of recipients ?? []) {
-    const token = crypto.randomUUID()
+    const token = crypto.randomUUID();
+
+    const link = `${baseUrl}/account-review/${landing_type}?session=${token}`;
 
     const { data: target, error: targetError } = await supabase
       .from("campaign_targets")
@@ -49,9 +46,9 @@ export async function POST(req: Request) {
         landing_type,
       })
       .select()
-      .single()
+      .single();
 
-    if (targetError) continue
+    if (targetError) continue;
 
     // Create fake email
     await supabase.from("fake_emails").insert({
@@ -84,8 +81,8 @@ export async function POST(req: Request) {
           </div>
         </div>
       `,
-    })
+    });
   }
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true });
 }

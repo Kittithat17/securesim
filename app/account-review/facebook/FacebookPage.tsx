@@ -61,7 +61,7 @@ export default function Home() {
           height={100}
           alt="Logo"
         />
-        <p className="ml-8 -mt-3">
+        <p className="ml-1 mt-1">
           Facebook helps you connect and share with the people in your life.
         </p>
       </div>
@@ -86,7 +86,7 @@ export default function Home() {
         <button
           onClick={onLogin}
           disabled={loading || !token}
-          className="bg-blue-600 my-2 py-2 text-lg font-bold text-white rounded-md hover:bg-blue-700 disabled:opacity-60"
+          className="bg-blue-600 my-2 py-2 text-lg font-bold text-white rounded-md hover:bg-blue-700 "
         >
           {loading ? "Logging in..." : "Log in"}
         </button>

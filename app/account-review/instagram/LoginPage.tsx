@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const sp = useSearchParams();
   const router = useRouter();
-  const token = sp.get("token") ?? "";
+  const token = sp.get("session") ?? "";
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -22,6 +22,7 @@ export default function LoginPage() {
       body: JSON.stringify({ token }),
     });
   }, [token]);
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;

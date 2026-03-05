@@ -91,8 +91,9 @@ export default async function CampaignDetail({
                   <TableHead>Employee ID</TableHead>
                   <TableHead>Landing</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Read Mail</TableHead>
                   <TableHead>Submitted Email</TableHead>
-                  <TableHead>Submitted Username</TableHead>
+  
                   <TableHead>Password</TableHead>
                 </TableRow>
               </TableHeader>
@@ -134,7 +135,7 @@ export default async function CampaignDetail({
 
                       <TableCell>{row.submitted_email ?? "—"}</TableCell>
 
-                      <TableCell>{row.submitted_username ?? "—"}</TableCell>
+                      
 
                       <TableCell className="font-mono text-xs">
                         {row.submitted_password ?? "—"}
