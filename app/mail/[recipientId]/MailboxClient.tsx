@@ -1,28 +1,43 @@
-"use client"
+//app/mail/[recipientId]/MailboxClient.tsx
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
 interface Email {
-  id: string
-  subject: string
-  body_html: string
+  id: string;
+  subject: string;
+  body_html: string;
+  is_read: boolean;
 }
 
-export default function MailboxClient({
-  emails,
-}: {
-  emails: Email[]
-}) {
-  // 1️⃣ Reverse the array so the newest email is at the top (index 0)
-  const reversedEmails = [...(emails || [])].reverse()
+export default function MailboxClient({ emails }: { emails: Email[] }) {
+  const [mailList, setMailList] = useState(emails || []);
 
-  // 2️⃣ Set the default selection to index 0 of our newly reversed list
   const [selectedId, setSelectedId] = useState(
-    reversedEmails?.[0]?.id
-  )
+    mailList?.[mailList.length - 1]?.id
+  );
 
-  const selected = reversedEmails.find(e => e.id === selectedId)
+  const reversedEmails = [...mailList].reverse();
 
+  const selected = reversedEmails.find((e) => e.id === selectedId);
+  const handleOpenMail = async (emailId: string) => {
+    setSelectedId(emailId);
+
+    // update UI ทันที
+    setMailList((prev) =>
+      prev.map((mail) =>
+        mail.id === emailId ? { ...mail, is_read: true } : mail
+      )
+    );
+
+    await fetch("/api/read-mail", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ emailId }),
+    });
+  };
   return (
     <>
       {/* Mail List */}
@@ -31,14 +46,17 @@ export default function MailboxClient({
         {reversedEmails?.map((email) => (
           <div
             key={email.id}
-            onClick={() => setSelectedId(email.id)}
-            className={`p-4 border-b hover:bg-gray-100 cursor-pointer ${
-              selectedId === email.id ? "bg-gray-100" : ""
-            }`}
+            onClick={() => handleOpenMail(email.id)}
+            className={`p-4 border-b cursor-pointer
+              ${selectedId === email.id
+                ? "bg-gray-100"
+                : !email.is_read
+                ? "bg-gray-200 font-semibold"
+                : "bg-white"
+              }
+            `}
           >
-            <div className="font-medium text-sm">
-              {email.subject}
-            </div>
+            <div className="font-medium text-sm">{email.subject}</div>
             <div className="text-xs text-gray-500 truncate">
               Click to open message
             </div>
@@ -50,9 +68,7 @@ export default function MailboxClient({
       <div className="flex-1 p-6 overflow-y-auto bg-white">
         {selected ? (
           <>
-            <h2 className="text-xl font-semibold mb-4">
-              {selected.subject}
-            </h2>
+            <h2 className="text-xl font-semibold mb-4">{selected.subject}</h2>
 
             <div
               className="prose max-w-none text-sm"
@@ -62,11 +78,9 @@ export default function MailboxClient({
             />
           </>
         ) : (
-          <div className="text-gray-500">
-            No emails
-          </div>
+          <div className="text-gray-500">No emails</div>
         )}
       </div>
     </>
-  )
+  );
 }

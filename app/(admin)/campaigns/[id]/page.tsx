@@ -1,3 +1,4 @@
+//app/%28admin%29/campaigns/%5Bid%5D/page.tsx
 export const dynamic = "force-dynamic";
 
 import { createClient } from "@supabase/supabase-js";
@@ -13,15 +14,22 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type CampaignTarget = {
-    recipient_id: string | null;
+  recipient_id: string | null;
   token: string | null;
   landing_type: string | null;
   sent_at: string | null;
   clicked_at: string | null;
   submitted_at: string | null;
+
   submitted_email: string | null;
   submitted_username: string | null;
   submitted_password: string | null;
+  fake_emails:
+    | {
+        is_read: boolean | null;
+      }[]
+    | null;
+
   recipients: {
     name: string;
     email: string;
@@ -48,20 +56,23 @@ export default async function CampaignDetail({
     .from("campaign_targets")
     .select(
       `
-      recipient_id,
-      token,
-      landing_type,
-      sent_at,
-      clicked_at,
-      submitted_at,
-      submitted_email,
-      submitted_username,
-      submitted_password,
-      recipients:recipient_id (
-        name,
-        email
-      )
-    `
+    recipient_id,
+    token,
+    landing_type,
+    sent_at,
+    clicked_at,
+    submitted_at,
+    submitted_email,
+    submitted_username,
+    submitted_password,
+    recipients:recipient_id (
+      name,
+      email
+    ),
+    fake_emails (
+      is_read
+    )
+  `
     )
     .eq("campaign_id", id);
 
@@ -93,7 +104,7 @@ export default async function CampaignDetail({
                   <TableHead>Status</TableHead>
                   <TableHead>Read Mail</TableHead>
                   <TableHead>Submitted Email</TableHead>
-  
+
                   <TableHead>Password</TableHead>
                 </TableRow>
               </TableHeader>
@@ -133,9 +144,15 @@ export default async function CampaignDetail({
                         )}
                       </TableCell>
 
-                      <TableCell>{row.submitted_email ?? "—"}</TableCell>
+                      <TableCell>
+                        {row.fake_emails?.[0]?.is_read ? (
+                          <Badge variant="secondary">Read</Badge>
+                        ) : (
+                          <Badge variant="outline">Unread</Badge>
+                        )}
+                      </TableCell>
 
-                      
+                      <TableCell>{row.submitted_email ?? "—"}</TableCell>
 
                       <TableCell className="font-mono text-xs">
                         {row.submitted_password ?? "—"}
