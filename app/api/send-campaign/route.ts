@@ -13,10 +13,28 @@ const domainMap: Record<string, string> = {
 
 export async function POST(req: Request) {
   const { name, landing_type } = await req.json();
+  
   if (!domainMap[landing_type]) {
     return NextResponse.json({ error: "Invalid landing" }, { status: 400 });
   }
+  
   const baseUrl = domainMap[landing_type];
+
+  // --- 1. DYNAMIC BRANDING LOGIC ADDED HERE ---
+  const isInstagram = landing_type === "instagram";
+  const brandName = isInstagram ? "Instagram" : "Facebook";
+  const avatarLetter = isInstagram ? "I" : "F";
+  const avatarColorHex = isInstagram ? "E1306C" : "1877f2"; // Insta Pink vs FB Blue
+  const buttonStyle = isInstagram 
+    ? "background-color: #E1306C; background-image: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);"
+    : "background-color: #007bff;";
+  // --------------------------------------------
+
+// 2. Using your locally hosted images from the public/images folder!
+  const logoUrl = isInstagram
+    ? "/images/igalt.png"
+    : "/images/facebook.png";
+
   // 1. Create campaign
   const { data: campaign, error: campaignError } = await supabase
     .from("campaigns")
@@ -55,29 +73,51 @@ export async function POST(req: Request) {
       campaign_target_id: target.id,
       subject: "Action Required: Account Verification",
       body_html: `
-        <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <div style="background-color: #0056b3; padding: 20px; text-align: center;">
-              <h2 style="color: #ffffff; margin: 0; font-size: 24px;">Account Notification</h2>
+        <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px 20px;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 40px;">
+            
+            <div style="font-size: 12px; color: #888888; margin-bottom: 25px;">
+              <span style="float: right;">Today, 11:23 PM <span style="color: #ffc107; font-size: 14px;">★</span></span>
+              <span>From <strong style="color: #0056b3;">Security</strong> to <strong style="color: #0056b3;">Personal</strong></span>
             </div>
-            <div style="padding: 30px; color: #333333;">
-              <p style="font-size: 16px; margin-bottom: 20px;">Hello,</p>
-              <p style="font-size: 16px; line-height: 1.5; margin-bottom: 20px;">
+            <div style="clear: both;"></div>
+
+            <h2 style="color: #1a2238; font-size: 26px; font-weight: 800; margin: 0 0 30px 0; letter-spacing: -0.5px;">
+              Account Notification
+            </h2>
+
+            <div style="margin-bottom: 30px;">
+              <img src="${logoUrl}" alt="${brandName} Logo" style="height: 35px; width: auto; display: block;" />
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <img src="https://ui-avatars.com/api/?name=${avatarLetter}&background=f0f2f5&color=${avatarColorHex}&rounded=true" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%; vertical-align: middle; margin-right: 12px;" />
+              <span style="font-size: 15px; color: #333333; font-weight: bold; vertical-align: middle;">Hello,</span>
+            </div>
+
+            <div style="padding-left: 52px;">
+              <p style="font-size: 15px; line-height: 1.6; color: #555555; margin: 0 0 25px 0;">
                 We have detected a new sign-in attempt. Please verify your identity immediately.
               </p>
-              <div style="text-align: center; margin: 30px 0;">
+
+              <div style="margin: 30px 0;">
                 <a href="${link}" 
-                   style="background-color: #007bff; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;">
+                   style="${buttonStyle} color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; display: inline-block;">
                   Verify Account Now
                 </a>
               </div>
-              <p style="font-size: 14px; color: #666666; margin-top: 20px;">
+
+              <p style="font-size: 14px; line-height: 1.5; color: #888888; margin: 0 0 40px 0;">
                 If you did not request this, please verify your account immediately.
               </p>
+
+              <div style="border-top: 1px solid #eeeeee; padding-top: 20px;">
+                <p style="font-size: 12px; color: #aaaaaa; margin: 0;">
+                  © 2026 ${brandName}. All rights reserved.
+                </p>
+              </div>
             </div>
-            <div style="background-color: #eeeeee; padding: 15px; text-align: center; font-size: 12px; color: #888888;">
-              <p style="margin: 0;">© 2026 Facebook. All rights reserved.</p>
-            </div>
+
           </div>
         </div>
       `,
