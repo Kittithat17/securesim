@@ -3,6 +3,7 @@ import { DashboardCharts, type DashboardData } from "@/components/dashboard-char
 
 export const dynamic = "force-dynamic"
 
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!

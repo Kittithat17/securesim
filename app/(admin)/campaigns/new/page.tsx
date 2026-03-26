@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { toast } from "sonner"
 
 export default function NewCampaignPage() {
   const [name, setName] = useState("")
@@ -15,7 +16,7 @@ export default function NewCampaignPage() {
       }),
     })
 
-    alert("Campaign Sent")
+    toast.success("Campaign sent!");
   }
 
   return (
@@ -40,7 +41,7 @@ export default function NewCampaignPage() {
 
       <button
         onClick={handleSubmit}
-        className="px-4 py-2 bg-black text-white rounded"
+        className="px-4 py-2 bg-black text-white rounded cursor-pointer"
       >
         Send Campaign
       </button>
