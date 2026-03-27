@@ -19,12 +19,13 @@ type Employee = {
   created_at: string;
 };
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+
 
 export default async function EmployeesPage() {
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   const { data, error } = await supabase
     .from("recipients")
     .select("*")
