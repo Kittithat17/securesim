@@ -2,13 +2,14 @@
 import { createClient } from "@supabase/supabase-js"
 import { NextResponse } from "next/server"
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+
 
 export async function POST(req: Request) {
   const { emailId } = await req.json()
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
   const { error } = await supabase
     .from("fake_emails")

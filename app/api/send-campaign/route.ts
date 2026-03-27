@@ -2,10 +2,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+
 const domainMap: Record<string, string> = {
   facebook: process.env.FACEBOOK_DOMAIN!,
   instagram: process.env.INSTAGRAM_DOMAIN!,
@@ -13,6 +10,10 @@ const domainMap: Record<string, string> = {
 
 export async function POST(req: Request) {
   const { name, landing_type } = await req.json();
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   
   if (!domainMap[landing_type]) {
     return NextResponse.json({ error: "Invalid landing" }, { status: 400 });
