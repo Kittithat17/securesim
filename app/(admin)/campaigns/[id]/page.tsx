@@ -36,10 +36,7 @@ type CampaignTarget = {
   } | null;
 };
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+
 
 export default async function CampaignDetail({
   params,
@@ -51,6 +48,10 @@ export default async function CampaignDetail({
   if (!id) {
     return <div className="p-6 text-red-500">Invalid campaign ID</div>;
   }
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   const { data, error } = await supabase
     .from("campaign_targets")
