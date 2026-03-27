@@ -4,12 +4,13 @@ import { DashboardCharts, type DashboardData } from "@/components/dashboard-char
 export const dynamic = "force-dynamic"
 
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+
 
 export default async function DashboardPage() {
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
   const { data: targets = [] } = await supabase
     .from("campaign_targets")
     .select("campaign_id, sent_at, clicked_at, submitted_at, landing_type")
