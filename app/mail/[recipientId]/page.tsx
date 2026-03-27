@@ -2,10 +2,7 @@
 import { createClient } from "@supabase/supabase-js"
 import MailboxClient from "./MailboxClient"
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+
 
 export default async function MailboxPage({
   params,
@@ -17,6 +14,10 @@ export default async function MailboxPage({
   if (!recipientId) {
     return <div>Invalid recipient</div>
   }
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
   const { data, error } = await supabase
     .from("fake_emails")
