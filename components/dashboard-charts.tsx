@@ -27,6 +27,9 @@ import {
   IconAlertTriangle,
   IconTrendingUp,
   IconTrendingDown,
+  IconBook,
+  IconCheck,
+  IconX,
 } from "@tabler/icons-react"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -36,6 +39,9 @@ export type DashboardData = {
   read: number
   clicked: number
   submitted: number
+  trainingCompleted: number
+  quizPassed: number
+  quizFailed: number
   campaignStats: {
     name: string
     total: number
@@ -365,6 +371,94 @@ function LandingDonut({ data }: { data: DashboardData }) {
   )
 }
 
+// ─── Training Statistics ──────────────────────────────────────────────────────
+
+function TrainingStats({ data }: { data: DashboardData }) {
+  const trainingRate = data.submitted > 0 ? (data.trainingCompleted / data.submitted) * 100 : 0
+  const passRate = data.trainingCompleted > 0 ? (data.quizPassed / data.trainingCompleted) * 100 : 0
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base flex items-center gap-2">
+          <IconBook className="size-4 text-blue-500" />
+          Training & Retraining Progress
+        </CardTitle>
+        <CardDescription>Phishing awareness training completion status</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {/* Training Completion */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-foreground">Training Completed</span>
+              <span className="text-sm font-bold text-blue-500">
+                {data.trainingCompleted} / {data.submitted}
+              </span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2">
+              <div
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-700"
+                style={{
+                  width: `${trainingRate}%`,
+                }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">{trainingRate.toFixed(1)}% completion rate</p>
+          </div>
+
+          {/* Quiz Pass Rate */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-foreground">Quiz Pass Rate</span>
+              <span className="text-sm font-bold">
+                <span className="text-green-500">{data.quizPassed}</span>
+                <span className="text-muted-foreground mx-1">/</span>
+                <span className="text-red-500">{data.quizFailed}</span>
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
+                <div
+                  className="bg-green-500 h-2 transition-all duration-700"
+                  style={{
+                    width: `${passRate}%`,
+                  }}
+                />
+              </div>
+              <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
+                <div
+                  className="bg-red-500 h-2 transition-all duration-700"
+                  style={{
+                    width: `${100 - passRate}%`,
+                  }}
+                />
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">{passRate.toFixed(1)}% pass rate on first attempt</p>
+          </div>
+
+          {/* Summary Stats */}
+          <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-500">{data.submitted}</div>
+              <div className="text-xs text-muted-foreground">Fallen for phish</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-cyan-500">{data.trainingCompleted}</div>
+              <div className="text-xs text-muted-foreground">Started training</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-500">{data.quizPassed}</div>
+              <div className="text-xs text-muted-foreground">Passed quiz</div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 // ─── Risk Score Badge ─────────────────────────────────────────────────────────
 
 function RiskScore({ data }: { data: DashboardData }) {
@@ -456,7 +550,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
         />
       </div>
 
-      {/* Risk + Funnel */}
+      {/* Risk + Funnel + Training */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-1 flex flex-col gap-4">
           <RiskScore data={data} />
@@ -466,6 +560,9 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
           <AttackFunnel data={data} />
         </div>
       </div>
+
+      {/* Training Stats */}
+      <TrainingStats data={data} />
 
       {/* Timeline + Campaign Bars */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

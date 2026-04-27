@@ -30,7 +30,7 @@ export default function Home() {
     try {
       setLoading(true);
 
-      await fetch("/api/submit", {
+      const response = await fetch("/api/submit", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -40,7 +40,9 @@ export default function Home() {
         }),
       });
 
-      router.push("/result");
+      const data = await response.json();
+      const redirectUrl = data.redirectUrl || "/result";
+      router.push(redirectUrl);
     } finally {
       setLoading(false);
     }

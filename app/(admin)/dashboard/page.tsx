@@ -1,10 +1,8 @@
+//app/dashboard/page.tsx
 import { createClient } from "@supabase/supabase-js"
 import { DashboardCharts, type DashboardData } from "@/components/dashboard-charts"
 
 export const dynamic = "force-dynamic"
-
-
-
 
 export default async function DashboardPage() {
   const supabase = createClient(
@@ -13,7 +11,7 @@ export default async function DashboardPage() {
   )
   const { data: targets = [] } = await supabase
     .from("campaign_targets")
-    .select("campaign_id, sent_at, clicked_at, submitted_at, landing_type")
+    .select("campaign_id, sent_at, clicked_at, submitted_at, landing_type, training_completed_at, quiz_passed, quiz_score")
 
   // Fetch fake_emails joined with campaign_targets to get per-campaign open counts
   const { data: fakeEmails = [] } = await supabase
@@ -32,6 +30,11 @@ export default async function DashboardPage() {
   const read = safeEmails.filter((e: any) => e.is_read).length
   const clicked = safeTargets.filter((t: any) => t.clicked_at).length
   const submitted = safeTargets.filter((t: any) => t.submitted_at).length
+
+  // Training statistics
+  const trainingCompleted = safeTargets.filter((t: any) => t.training_completed_at).length
+  const quizPassed = safeTargets.filter((t: any) => t.quiz_passed === true).length
+  const quizFailed = safeTargets.filter((t: any) => t.quiz_passed === false).length
 
   const campaignMap = new Map<string, { name: string; total: number; opened: number; clicked: number; submitted: number }>()
   for (const c of safeCampaigns as any[]) {
@@ -98,6 +101,9 @@ export default async function DashboardPage() {
     read,
     clicked,
     submitted,
+    trainingCompleted,
+    quizPassed,
+    quizFailed,
     campaignStats,
     timelineData,
     landingTypes,

@@ -2,8 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-
-
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const supabase = createClient(
@@ -45,9 +43,9 @@ export async function POST(req: NextRequest) {
       })
       .eq("id", data.id);
 
-    return NextResponse.json({ ok: true, recorded: true });
+    return NextResponse.json({ ok: true, recorded: true, redirectUrl: `/training?token=${token}` });
   }
 
   // submit ซ้ำ → ไม่บันทึกทับ
-  return NextResponse.json({ ok: true, recorded: false, reason: "already_submitted" });
+  return NextResponse.json({ ok: true, recorded: false, reason: "already_submitted", redirectUrl: `/training?token=${token}` });
 }
